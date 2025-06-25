@@ -7,7 +7,7 @@ Funcionalidade: Visualizar formularios para responder
 
 Contexto: Usuario na página de avaliações
   Dado em que eu esteja logado como usuário e na pagina de avaliações do CAMAAR
-  Devo ver as turmas em que estou matriculado.
+  E Devo ver as turmas em que estou matriculado.
 
 # Happy Path
 Cenário: Formularios a responder
