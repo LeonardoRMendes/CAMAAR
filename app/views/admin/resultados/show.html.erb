@@ -1,0 +1,149 @@
+<%# app/views/admin/resultados/show.html.erb %>
+<h1>Resultados para: <%= @formulario.nome %></h1>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<div class="admin-navigation">
+  <%= link_to "Voltar aos Resultados", admin_resultados_path, class: "btn btn-secondary" %>
+  <%= link_to "Exportar para CSV", export_csv_admin_resultado_path(@formulario), class: "btn btn-success" %>
+</div>
+
+<div class="formulario-info">
+  <div class="info-card">
+    <h3>Informações do Formulário</h3>
+    <p><strong>Template:</strong> <%= @formulario.template.nome %></p>
+    <p><strong>Turma:</strong> <%= @formulario.turma.nome %></p>
+    <p><strong>Total de Respostas:</strong> <%= @formulario.avaliacoes.where(status: :concluida).count %></p>
+  </div>
+</div>
+
+<div class="resultados-content">
+  <% if @sem_respostas %>
+    <div class="alert alert-info">
+      <p>Este formulário ainda não possui respostas.</p>
+    </div>
+  <% else %>
+    <% @resultados_agregados.each do |questao, resultados| %>
+      <div class="questao-results">
+        <h3><%= questao.texto %></h3>
+        <% if resultados.any? %>
+          <ul class="resultados-lista">
+            <% resultados.each do |resposta, contagem| %>
+              <li class="resultado-item">
+                <span class="resposta-texto"><%= resposta %></span>: 
+                <span class="contagem"><%= contagem %> voto<%= 's' if contagem != 1 %></span>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p class="text-muted">Nenhuma resposta para esta questão.</p>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<style>
+  .admin-navigation {
+    margin-bottom: 20px;
+  }
+  
+  .admin-navigation .btn {
+    margin-right: 10px;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  .formulario-info {
+    margin-bottom: 30px;
+  }
+  
+  .info-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+  }
+  
+  .info-card h3 {
+    margin-top: 0;
+    color: #495057;
+  }
+  
+  .questao-results {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .questao-results h3 {
+    color: #343a40;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+  }
+  
+  .resultados-lista {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .resultado-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .resultado-item:last-child {
+    border-bottom: none;
+  }
+  
+  .resposta-texto {
+    font-weight: 500;
+    color: #495057;
+  }
+  
+  .contagem {
+    background: #007bff;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+  
+  .alert {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+  }
+</style>

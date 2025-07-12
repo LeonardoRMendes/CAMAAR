@@ -1,0 +1,108 @@
+<h1>Criar Novo Formulário</h1>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<%= form_with url: admin_formularios_path, method: :post, local: true do |form| %>
+  <div class="form-group">
+    <%= label_tag :template_id, "Template" %>
+    <%= select_tag :template_id, 
+                   options_from_collection_for_select(@templates, :id, :nome, params[:template_id]),
+                   prompt: "Selecione um template...",
+                   class: "form-control" %>
+  </div>
+  
+  <div class="form-group">
+    <label>Turmas</label>
+    <div class="turmas-checkboxes">
+      <% @turmas.each do |turma| %>
+        <div class="checkbox-item">
+          <%= check_box_tag "turma_ids[]", turma.id, 
+                            (params[:turma_ids] || []).include?(turma.id.to_s),
+                            id: "turma_#{turma.id}" %>
+          <%= label_tag "turma_#{turma.id}", turma.nome %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="form-actions">
+    <%= form.submit "Gerar Formulário", class: "btn btn-primary" %>
+    <%= link_to "Cancelar", admin_formularios_path, class: "btn btn-secondary" %>
+  </div>
+<% end %>
+
+<style>
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .turmas-checkboxes {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  
+  .checkbox-item {
+    margin-bottom: 10px;
+  }
+  
+  .checkbox-item input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  .form-actions {
+    margin-top: 30px;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+  
+  .alert {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+</style>
