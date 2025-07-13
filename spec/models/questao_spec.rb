@@ -1,0 +1,117 @@
+require 'rails_helper'
+
+# Descreve os testes para o modelo Questao
+RSpec.describe Questao, type: :model do
+  # Bloco de testes para as associações
+  describe 'associations' do
+    it { should belong_to(:template) }
+  end
+
+  # Bloco de testes para o enum de tipo
+  describe 'enums' do
+    it { should define_enum_for(:tipo).with_values(texto: 'texto', multipla_escolha: 'multipla_escolha') }
+  end
+
+  # Bloco de testes para as validações
+  describe 'validations' do
+    it { should validate_presence_of(:texto) }
+    it { should validate_presence_of(:tipo) }
+    
+    # Testa a validação de inclusão para o campo 'obrigatoria'
+    it { should validate_inclusion_of(:obrigatoria).in_array([true, false]) }
+
+    # Testa a validação condicional para o campo 'opcoes'
+    context 'when tipo is multipla_escolha' do
+      subject { build(:questao, tipo: :multipla_escolha) }
+      it { should validate_presence_of(:opcoes) }
+    end
+
+    context 'when tipo is texto' do
+      subject { build(:questao, tipo: :texto) }
+      it { should_not validate_presence_of(:opcoes) }
+    end
+  end
+  
+  # Bloco de testes para a serialização do atributo 'opcoes'
+  describe 'serialization' do
+    it 'serializes a Ruby array into the opcoes attribute' do
+      opcoes_array = ["Opção 1", "Opção 2"]
+      questao = create(:questao, tipo: :multipla_escolha, opcoes: opcoes_array)
+      
+      # Recarrega a questão do banco de dados para garantir que a serialização funcionou
+      questao.reload
+      
+      # Verifica se o atributo 'opcoes' é um Array após ser lido do banco
+      expect(questao.opcoes).to be_an(Array)
+      expect(questao.opcoes).to eq(opcoes_array)
+    end
+  end
+
+  # Bloco de testes para os métodos de instância
+  describe 'instance methods' do
+    let(:template) { create(:template) }
+    let(:formulario) { create(:formulario, template: template) }
+    let!(:questao) { create(:questao, template: template, tipo: :multipla_escolha) }
+
+    # Testa o método 'aggregate_results_for_formulario'
+    describe '#aggregate_results_for_formulario' do
+      it 'correctly aggregates a single response' do
+        avaliacao = create(:avaliacao, formulario: formulario, status: :concluida)
+        create(:resposta, avaliacao: avaliacao, questao: questao, conteudo: 'Muito bom')
+
+        results = questao.aggregate_results_for_formulario(formulario)
+        expect(results).to eq({ "Muito bom" => 1 })
+      end
+
+      it 'correctly aggregates multiple different responses' do
+        # Cria duas avaliações concluídas para o mesmo formulário
+        avaliacao1 = create(:avaliacao, formulario: formulario, status: :concluida)
+        avaliacao2 = create(:avaliacao, formulario: formulario, status: :concluida)
+        
+        create(:resposta, avaliacao: avaliacao1, questao: questao, conteudo: 'Bom')
+        create(:resposta, avaliacao: avaliacao2, questao: questao, conteudo: 'Ruim')
+
+        results = questao.aggregate_results_for_formulario(formulario)
+        expect(results).to eq({ "Bom" => 1, "Ruim" => 1 })
+      end
+      
+      it 'correctly aggregates multiple identical responses' do
+        avaliacao1 = create(:avaliacao, formulario: formulario, status: :concluida)
+        avaliacao2 = create(:avaliacao, formulario: formulario, status: :concluida)
+        
+        create(:resposta, avaliacao: avaliacao1, questao: questao, conteudo: 'Bom')
+        create(:resposta, avaliacao: avaliacao2, questao: questao, conteudo: 'Bom')
+
+        results = questao.aggregate_results_for_formulario(formulario)
+        expect(results).to eq({ "Bom" => 2 })
+      end
+
+      it 'does not include responses from pending avaliacoes' do
+        avaliacao = create(:avaliacao, formulario: formulario, status: :pendente)
+        create(:resposta, avaliacao: avaliacao, questao: questao, conteudo: 'Muito bom')
+        
+        results = questao.aggregate_results_for_formulario(formulario)
+        expect(results).to be_empty
+      end
+    end
+
+    # Testa o método 'opcoes_lista'
+    describe '#opcoes_lista' do
+      it 'returns an empty array when tipo is texto' do
+        questao_texto = build(:questao, tipo: :texto)
+        expect(questao_texto.opcoes_lista).to eq([])
+      end
+
+      it 'returns the custom opcoes when they are present' do
+        custom_opcoes = ["Sim", "Não", "Talvez"]
+        questao_multipla = build(:questao, tipo: :multipla_escolha, opcoes: custom_opcoes)
+        expect(questao_multipla.opcoes_lista).to eq(custom_opcoes)
+      end
+
+      it 'returns the default OPCOES_AVALIACAO when opcoes are not set' do
+        questao_multipla = build(:questao, tipo: :multipla_escolha, opcoes: nil)
+        expect(questao_multipla.opcoes_lista).to eq(Questao::OPCOES_AVALIACAO)
+      end
+    end
+  end
+end
