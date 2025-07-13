@@ -32,7 +32,7 @@ chmod +x setup.sh
 ## Tecnologias
 
 - Ruby 3.4.4
-- Rails 7.1.5.1
+- Rails 8.0.2
 - SQLite3
 - Bootstrap CSS
 
