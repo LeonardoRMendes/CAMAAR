@@ -1,0 +1,47 @@
+{
+  "turmas": [
+    {
+      "id_turma": "CIC0097-TA-2024-1",
+      "codigo_componente": "CIC0097",
+      "nome_componente": "Fundamentos de Arquiteturas de Computadores",
+      "ano": 2024,
+      "periodo": 1,
+      "discentes": ["190084006", "200033522", "150005491"]
+    },
+    {
+      "id_turma": "CIC0105-TB-2024-1", 
+      "codigo_componente": "CIC0105",
+      "nome_componente": "Programação de Computadores",
+      "ano": 2024,
+      "periodo": 1,
+      "discentes": ["190084502", "190102829"]
+    }
+  ],
+  "discentes": [
+    {
+      "matricula": "190084006",
+      "nome": "Ana Clara Jordao Perna",
+      "email": "acjpjvjp@gmail.com"
+    },
+    {
+      "matricula": "200033522",
+      "nome": "Andre Carvalho de Roure", 
+      "email": "andreCarvalhoroure@gmail.com"
+    },
+    {
+      "matricula": "150005491",
+      "nome": "André Carvalho Marques",
+      "email": "andre.acm97@outlook.com"
+    },
+    {
+      "matricula": "190084502",
+      "nome": "Antonio Vinicius de Moura Rodrigues",
+      "email": "antoniovmoura.r@gmail.com"
+    },
+    {
+      "matricula": "190102829",
+      "nome": "Arthur Barreiros de Oliveira Mota",
+      "email": "arthurbarreirosmota@gmail.com"
+    }
+  ]
+}

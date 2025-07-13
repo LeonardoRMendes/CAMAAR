@@ -1,0 +1,84 @@
+<%# app/views/admin/resultados/index.html.erb %>
+<h1>Resultados dos Formulários</h1>
+
+<div class="admin-navigation">
+  <%= link_to "Templates", admin_templates_path, class: "btn btn-secondary" %>
+  <%= link_to "Formulários", admin_formularios_path, class: "btn btn-secondary" %>
+  <%= link_to "Importar Dados", admin_importacoes_path, class: "btn btn-secondary" %>
+  <%= link_to "Resultados", admin_resultados_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="formularios-resultados">
+  <% if @formularios.any? %>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nome do Formulário</th>
+            <th>Template</th>
+            <th>Turma</th>
+            <th>Respostas</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @formularios.each do |formulario| %>
+            <tr class="formulario-row">
+              <td><%= formulario.nome %></td>
+              <td><%= formulario.template.nome %></td>
+              <td><%= formulario.turma.nome %></td>
+              <td>
+                <% respostas_count = formulario.avaliacoes.where(status: :concluida).count %>
+                <%= pluralize(respostas_count, 'resposta', 'respostas') %>
+              </td>
+              <td>
+                <%= link_to "Ver Resultados", admin_resultado_path(formulario), class: "btn btn-primary btn-sm" %>
+                <%= link_to "Exportar CSV", export_csv_admin_resultado_path(formulario), class: "btn btn-success btn-sm" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-muted">Nenhum formulário encontrado.</p>
+  <% end %>
+</div>
+
+<style>
+  .admin-navigation {
+    margin-bottom: 20px;
+  }
+  
+  .admin-navigation .btn {
+    margin-right: 10px;
+  }
+  
+  .formularios-resultados {
+    margin-top: 20px;
+  }
+  
+  .table {
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    margin-right: 5px;
+  }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+</style>

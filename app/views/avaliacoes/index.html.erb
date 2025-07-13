@@ -1,0 +1,65 @@
+<h1>Minhas Avaliações</h1>
+
+<% if @turmas_com_avaliacoes.any? %>
+  <div class="turmas-container">
+    <% @turmas_com_avaliacoes.each do |turma, avaliacoes| %>
+      <div class="turma-card" id="turma-<%= turma.id %>">
+        <h3><%= turma.nome %></h3>
+        
+        <% if avaliacoes.any? %>
+          <div class="formularios-pendentes">
+            <h4>Formulários Pendentes:</h4>
+            <% avaliacoes.each do |avaliacao| %>
+              <p>
+                <%= link_to avaliacao.formulario.nome, formulario_path(avaliacao.formulario), class: "btn btn-primary" %>
+              </p>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="sem-formularios">Todos os formulários dessa turma foram respondidos.</p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p>Você não possui avaliações pendentes no momento.</p>
+<% end %>
+
+<style>
+  .turmas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .turma-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-width: 300px;
+  }
+  
+  .turma-card h3 {
+    margin-top: 0;
+    color: #333;
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .sem-formularios {
+    color: #666;
+    font-style: italic;
+  }
+</style>

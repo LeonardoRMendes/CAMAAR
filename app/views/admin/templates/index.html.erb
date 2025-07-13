@@ -1,0 +1,66 @@
+<div class="container">
+  <h1>Gerenciamento de Templates</h1>
+
+  <% if flash[:notice] %>
+    <div class="alert alert-success">
+      <%= flash[:notice] %>
+    </div>
+  <% end %>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <div class="nav">
+    <%= link_to "Templates", admin_templates_path %>
+    <%= link_to "Formulários", admin_formularios_path %>
+    <%= link_to "Importar Dados", admin_importacoes_path %>
+    <%= link_to "Resultados", admin_resultados_path %>
+  </div>
+
+  <div class="header-actions">
+    <%= link_to "Criar Novo Template", new_admin_template_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="templates-list">
+    <% if @templates.any? %>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome do Template</th>
+            <th>Questões</th>
+            <th class="actions">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @templates.each do |template| %>
+            <tr>
+              <td>
+                <%= link_to template.nome, edit_admin_template_path(template), 
+                    style: "text-decoration: none; color: #3498db; font-weight: 500;" %>
+                <% if template.descricao.present? %>
+                  <br><small style="color: #7f8c8d;"><%= template.descricao %></small>
+                <% end %>
+              </td>
+              <td><%= pluralize(template.questoes.count, 'questão', 'questões') %></td>
+              <td class="actions">
+                <%= link_to "Editar", edit_admin_template_path(template), class: "btn btn-warning" %>
+                <%= link_to "Excluir", admin_template_path(template), 
+                            data: { 
+                              "turbo-method": "delete",
+                              "turbo-confirm": "Tem certeza que deseja excluir o template '#{template.nome}'?" 
+                            },
+                            class: "btn btn-danger" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p>Nenhum template criado ainda.</p>
+      <p><%= link_to "Criar o primeiro template", new_admin_template_path, class: "btn btn-primary" %></p>
+    <% end %>
+  </div>
+</div>
