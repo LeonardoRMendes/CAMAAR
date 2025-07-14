@@ -9,11 +9,11 @@ if user1 && user2
   Matricula.find_or_create_by(user: user1, turma: turma9)
   Matricula.find_or_create_by(user: user2, turma: turma9)
   
-  puts "✅ Usuários matriculados na turma #{turma9.nome}"
+  puts "Usuários matriculados na turma #{turma9.nome}"
   
   # Verificar formulários da turma 9
   formularios_turma9 = Formulario.where(turma: turma9, ativo: true)
-  puts "📋 Formulários ativos na turma 9: #{formularios_turma9.count}"
+  puts "Formulários ativos na turma 9: #{formularios_turma9.count}"
   
   formularios_turma9.each do |formulario|
     [user1, user2].each do |user|
@@ -25,13 +25,13 @@ if user1 && user2
         a.status = :pendente
       end
       
-      puts "🎯 #{user.nome} -> #{formulario.nome}: #{avaliacao.status}"
+      puts "#{user.nome} -> #{formulario.nome}: #{avaliacao.status}"
     end
   end
   
-  puts "\n📊 Resultado final:"
+  puts "\nResultado final:"
   puts "User1 avaliações pendentes: #{user1.avaliacoes.where(status: :pendente).count}"
   puts "User2 avaliações pendentes: #{user2.avaliacoes.where(status: :pendente).count}"
 else
-  puts "❌ Usuários não encontrados"
+  puts "Usuários não encontrados"
 end

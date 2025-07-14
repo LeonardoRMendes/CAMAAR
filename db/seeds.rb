@@ -62,11 +62,11 @@ Avaliacao.create!(
   status: :pendente
 )
 
-puts "✅ Dados de teste criados:"
-puts "👤 Admin: admin@unb.br / admin123"
-puts "👤 User: user@unb.br / user123"
-puts "📝 Templates criados: #{Template.count}"
-puts "👥 Usuário associado à turma '#{turma.nome}'"
-puts "📋 Template '#{template3.nome}' está em uso"
+puts "Dados de teste criados:"
+puts "Admin: admin@unb.br / admin123"
+puts "User: user@unb.br / user123"
+puts "Templates criados: #{Template.count}"
+puts "Usuário associado à turma '#{turma.nome}'"
+puts "Template '#{template3.nome}' está em uso"
 puts ""
-puts "🌐 Acesse: http://localhost:3000/login"
+puts "Acesse: http://localhost:3000/login"

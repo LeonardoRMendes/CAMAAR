@@ -36,7 +36,7 @@ chmod +x setup.sh
 - SQLite3
 - Bootstrap CSS
 
-## 👤 Usuários padrão
+## Usuários padrão
 
 Após executar o setup:
 
@@ -87,7 +87,7 @@ rails console
 rails routes
 ```
 
-## 📁 Estrutura do projeto
+## Estrutura do projeto
 
 ```
 ├── app/
@@ -102,7 +102,7 @@ rails routes
 └── test/              # Testes unitários
 ```
 
-## 🌟 Funcionalidades principais
+## Funcionalidades principais
 
 - **Autenticação**: Login/logout de usuários
 - **Administração**: Gerenciamento de templates e formulários
@@ -115,7 +115,7 @@ rails routes
 - **Relatórios**: Visualização e exportação de resultados
 - **Multi-perfil**: Administradores e Participantes
 
-## 🐳 Docker (Alternativo)
+## Docker (Alternativo)
 
 Se preferir usar Docker:
 
@@ -127,7 +127,7 @@ docker build -t camaar .
 docker run -p 3000:3000 camaar
 ```
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Erro de login "Email ou senha incorretos"
 Se não conseguir fazer login:
