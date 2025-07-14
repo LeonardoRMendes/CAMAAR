@@ -3,7 +3,7 @@ class RespostasController < ApplicationController
   
   def create
     @formulario = Formulario.find(params[:formulario_id])
-    @questoes = @formulario.questoes.order(:id)
+    @questoes = @formulario.template.questoes.order(:id)
     
     required_questions = @questoes.where(obrigatoria: true)
     missing_required = []
@@ -24,9 +24,18 @@ class RespostasController < ApplicationController
     avaliacao = Avaliacao.find_by(user: current_user, formulario: @formulario)
     
     if avaliacao.nil?
-      flash.now[:alert] = "Avaliação não encontrada para este usuário."
-      render 'formularios/show'
-      return
+      # Criar avaliação automaticamente se o usuário estiver matriculado na turma
+      if current_user.turmas.include?(@formulario.turma)
+        avaliacao = Avaliacao.create!(
+          user: current_user,
+          formulario: @formulario,
+          status: :pendente
+        )
+      else
+        flash.now[:alert] = "Você não está matriculado nesta turma."
+        render 'formularios/show'
+        return
+      end
     end
     
     # Verificar se a avaliação já foi concluída

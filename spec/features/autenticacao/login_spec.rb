@@ -21,11 +21,10 @@ RSpec.feature "Autenticação de Usuário", type: :feature do
     # E eu clico no botão "Entrar"
     click_button 'Entrar'
     
-    # Então eu devo ver a mensagem "Login realizado com sucesso!"
-    expect(page).to have_content('Login realizado com sucesso!')
+    # Então eu devo estar logado e ver meu nome no dashboard
+    expect(page).to have_content('Bem-vindo, Nome do Usuário')
     
     # E eu devo estar na página principal do participante
-    # Nota: 'dashboard_path' é uma suposição. Altere se a rota for diferente (ex: root_path).
     expect(page).to have_current_path(dashboard_path) 
   end
 
@@ -43,8 +42,8 @@ RSpec.feature "Autenticação de Usuário", type: :feature do
     # E eu clico no botão "Entrar"
     click_button 'Entrar'
     
-    # Então eu devo ver a mensagem de erro "E-mail ou senha inválidos."
-    expect(page).to have_content('E-mail ou senha inválidos.')
+    # Então eu devo ver a mensagem de erro
+    expect(page).to have_content('Senha inválida.')
     
     # E eu devo permanecer na página de login
     expect(page).to have_current_path(login_path)

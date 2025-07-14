@@ -1,7 +1,9 @@
 class PasswordResetsController < ApplicationController
   def edit
     @user = User.find_signed(params[:token], purpose: "password_setup")
-    redirect_to login_path, alert: 'Link para definição de senha inválido ou expirado.' unless @user
+    if @user.nil?
+      redirect_to login_path, alert: 'Link para definição de senha inválido ou expirado.'
+    end
   end
 
   def update

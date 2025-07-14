@@ -30,11 +30,11 @@ RSpec.describe Resposta, type: :model do
       it 'is invalid with a duplicate user and questao' do
         # Tenta criar uma segunda resposta com o mesmo usuário e questão
         duplicate_resposta = build(:resposta, user: user, questao: questao, avaliacao: avaliacao)
-        
+
         # Espera-se que a resposta duplicada não seja válida
         expect(duplicate_resposta).not_to be_valid
         # Verifica se a mensagem de erro correta está presente
-        expect(duplicate_resposta.errors[:user_id]).to include('já está em uso')
+        expect(duplicate_resposta.errors[:user_id]).to include('has already been taken')
       end
 
       it 'is valid for the same user on a different questao' do
@@ -42,7 +42,7 @@ RSpec.describe Resposta, type: :model do
         another_questao = create(:questao)
         # Cria uma resposta para o mesmo usuário, mas em uma questão diferente
         resposta = build(:resposta, user: user, questao: another_questao, avaliacao: avaliacao)
-        
+
         # Espera-se que esta resposta seja válida
         expect(resposta).to be_valid
       end
@@ -53,7 +53,7 @@ RSpec.describe Resposta, type: :model do
         another_avaliacao = create(:avaliacao, user: another_user, formulario: avaliacao.formulario)
         # Cria uma resposta para um usuário diferente na mesma questão
         resposta = build(:resposta, user: another_user, questao: questao, avaliacao: another_avaliacao)
-        
+
         # Espera-se que esta resposta seja válida
         expect(resposta).to be_valid
       end

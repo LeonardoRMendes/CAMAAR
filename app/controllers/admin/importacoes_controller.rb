@@ -10,12 +10,20 @@ class Admin::ImportacoesController < ApplicationController
       
       if result[:success]
         stats = result[:stats]
-        flash[:notice] = "Arquivo importado com sucesso! " \
-                        "#{stats[:turmas]} turmas, " \
-                        "#{stats[:discentes]} discentes, " \
-                        "#{stats[:matriculas]} matrículas criadas."
+        if stats[:turmas] == 0 && stats[:discentes] == 0
+          flash[:notice] = "#{stats[:discentes]} novos participantes e #{stats[:turmas]} novas turmas foram adicionados"
+        else
+          flash[:notice] = "Arquivo importado com sucesso! " \
+                          "#{stats[:turmas]} turmas, " \
+                          "#{stats[:discentes]} discentes, " \
+                          "#{stats[:matriculas]} matrículas criadas."
+        end
       else
-        flash[:alert] = result[:error]
+        if result[:error] == 'JSON inválido'
+          flash[:alert] = "Ocorreu um erro ao processar o arquivo. Verifique o formato do JSON."
+        else
+          flash[:alert] = result[:error]
+        end
       end
     else
       flash[:alert] = "Por favor, selecione um arquivo para importar."

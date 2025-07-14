@@ -1,12 +1,6 @@
 <h1><%= @formulario.nome %></h1>
 
-<% if flash[:alert] %>
-  <div class="alert alert-danger">
-    <%= flash[:alert] %>
-  </div>
-<% end %>
-
-<%= form_with url: formulario_respostas_path(@formulario), method: :post, local: true do |form| %>
+<%= form_tag formulario_respostas_path(@formulario), method: :post do %>
   <% @questoes.each do |questao| %>
     <div class="question-group">
       <%= label_tag "respostas[#{questao.id}]", questao.texto %>
@@ -14,31 +8,23 @@
         <span class="required">*</span>
       <% end %>
       
-      <% if questao.tipo == 'multipla_escolha' %>
-        <% if questao.opcoes_lista.present? %>
-          <div class="opcoes-multipla-escolha">
-            <% questao.opcoes_lista.each do |opcao| %>
-              <label class="opcao-label">
-                <%= radio_button_tag "respostas[#{questao.id}]", opcao, false, 
-                    required: questao.obrigatoria, class: "opcao-radio" %>
-                <%= opcao %>
-              </label>
-            <% end %>
-          </div>
-        <% end %>
-      <% else %>
-        <%= text_area_tag "respostas[#{questao.id}]", "", 
-                          id: questao.texto, 
-                          class: "form-control",
-                          rows: 3,
-                          required: questao.obrigatoria %>
-      <% end %>
+      <%= text_area_tag "respostas[#{questao.id}]", "", 
+                        id: "questao_#{questao.id}", 
+                        class: "form-control",
+                        rows: 3,
+                        required: questao.obrigatoria %>
     </div>
   <% end %>
   
+  <!-- Debug: texto antes do botão -->
+  <p>Aqui deveria aparecer o botão:</p>
+  
   <div class="form-group">
-    <%= form.submit "Enviar Avaliação", class: "btn btn-primary" %>
+    <%= submit_tag "Enviar Avaliação", class: "btn btn-primary" %>
   </div>
+  
+  <!-- Debug: texto depois do botão -->
+  <p>Botão renderizado com sucesso!</p>
 <% end %>
 
 <style>

@@ -5,15 +5,14 @@ RSpec.feature "Definição de Senha para Novos Usuários", type: :feature do
 
   # Contexto:
   # Cria um usuário sem senha definida, mas com um token para a definição de senha.
-  # Nota: O mecanismo de token pode variar. Aqui, estamos simulando um token simples.
-  # Adapte a criação do token se seu modelo User usar um método específico.
-  let!(:new_user) { create(:user, email: 'novo.participante@email.com', password_digest: nil, password_reset_token: 'token_valido_aqui') }
+  let!(:new_user) { create(:user, :without_password, email: 'novo.participante@email.com') }
+  let!(:valid_token) { new_user.signed_id(purpose: "password_setup") }
 
   # Cenário: Usuário define a senha com sucesso usando um token válido
   scenario "Usuário define a senha com sucesso usando um token válido" do
     # Quando eu abro o link de definição de senha recebido no e-mail
-    # Nota: A rota 'edit_password_reset_path' é uma suposição. Altere se necessário.
-    visit edit_password_reset_path(new_user.password_reset_token)
+    # Nota: A rota 'password_reset_edit_path' é a correta baseada no routes.rb
+    visit password_reset_edit_path(valid_token)
 
     # E eu preencho o campo "Nova Senha" com "umaSenhaForte123"
     fill_in 'Nova Senha', with: 'umaSenhaForte123'
@@ -40,7 +39,7 @@ RSpec.feature "Definição de Senha para Novos Usuários", type: :feature do
   # Cenário: Usuário tenta usar um link com token inválido
   scenario "Usuário tenta usar um link com token inválido" do
     # Quando eu tento visitar a página de definição de senha com um token inválido
-    visit edit_password_reset_path('token_invalido')
+    visit password_reset_edit_path('token_invalido')
     
     # Então eu devo ser redirecionado para a página de "Login"
     expect(page).to have_current_path(login_path)
@@ -52,7 +51,7 @@ RSpec.feature "Definição de Senha para Novos Usuários", type: :feature do
   # Cenário: Usuário digita senhas que não correspondem
   scenario "Usuário digita senhas que não correspondem" do
     # Quando eu abro o link de definição de senha recebido no e-mail
-    visit edit_password_reset_path(new_user.password_reset_token)
+    visit password_reset_edit_path(valid_token)
     
     # E eu preencho o campo "Nova Senha" com "senhaBoa1"
     fill_in 'Nova Senha', with: 'senhaBoa1'
@@ -64,10 +63,9 @@ RSpec.feature "Definição de Senha para Novos Usuários", type: :feature do
     click_button 'Definir Senha'
     
     # Então eu devo permanecer na página de definição de senha
-    expect(page).to have_current_path(edit_password_reset_path(new_user.password_reset_token))
+    expect(current_path).to match(%r{/password_resets/.+})
     
-    # E eu devo ver a mensagem de erro "A confirmação de senha não corresponde à senha."
-    # Nota: A mensagem exata pode variar dependendo da sua configuração de i18n do Rails.
-    expect(page).to have_content('A confirmação de senha não corresponde à senha.')
+    # E eu devo ver a mensagem de erro "Password confirmation doesn't match Password"
+    expect(page).to have_content("Password confirmation doesn't match Password")
   end
 end

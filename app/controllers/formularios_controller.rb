@@ -3,7 +3,8 @@ class FormulariosController < ApplicationController
   
   def show
     @formulario = Formulario.find(params[:id])
-    @questoes = @formulario.questoes.order(:id)
+    @questoes = @formulario.template.questoes.order(:id)
+    @avaliacao = Avaliacao.find_by(user: current_user, formulario: @formulario)
   end
   
   private

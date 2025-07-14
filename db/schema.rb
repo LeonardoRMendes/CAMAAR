@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_143948) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_13_222316) do
   create_table "avaliacaos", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "formulario_id", null: false
@@ -64,7 +64,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_143948) do
     t.integer "avaliacao_id", null: false
     t.index ["avaliacao_id"], name: "index_respostas_on_avaliacao_id"
     t.index ["questao_id"], name: "index_respostas_on_questao_id"
-    t.index ["user_id", "questao_id"], name: "index_respostas_on_user_id_and_questao_id", unique: true
+    t.index ["user_id", "questao_id", "avaliacao_id"], name: "index_respostas_on_user_questao_avaliacao", unique: true
     t.index ["user_id"], name: "index_respostas_on_user_id"
   end
 
@@ -90,7 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_143948) do
 
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
-    t.string "password_digest", null: false
+    t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "role", default: 0

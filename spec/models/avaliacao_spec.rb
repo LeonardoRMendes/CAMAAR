@@ -8,16 +8,16 @@ RSpec.describe Avaliacao, type: :model do
 
   # Bloco de testes para as associações do modelo
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:formulario) }
-    
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:formulario) }
+
     # Testa a associação 'has_many' e suas opções
     it 'has many respostas' do
       association = described_class.reflect_on_association(:respostas)
       expect(association.macro).to eq :has_many
       expect(association.options[:dependent]).to eq :destroy
       expect(association.options[:class_name]).to eq 'Resposta'
-    end
+  end
   end
 
   # Bloco de testes para o enum de status
@@ -40,11 +40,11 @@ RSpec.describe Avaliacao, type: :model do
       it 'is invalid with a duplicate user and formulario' do
         # Tenta criar uma segunda avaliação com o mesmo usuário e formulário
         duplicate_avaliacao = build(:avaliacao, user: user, formulario: formulario)
-        
+
         # Espera-se que a avaliação duplicada não seja válida
         expect(duplicate_avaliacao).not_to be_valid
         # Verifica se a mensagem de erro correta está presente
-        expect(duplicate_avaliacao.errors[:user_id]).to include('já está em uso')
+        expect(duplicate_avaliacao.errors[:user_id]).to include('has already been taken')
       end
 
       it 'is valid with the same user but a different formulario' do
@@ -52,7 +52,7 @@ RSpec.describe Avaliacao, type: :model do
         another_formulario = create(:formulario)
         # Cria uma avaliação com o mesmo usuário, mas um formulário diferente
         avaliacao = build(:avaliacao, user: user, formulario: another_formulario)
-        
+
         # Espera-se que esta avaliação seja válida
         expect(avaliacao).to be_valid
       end
@@ -62,7 +62,7 @@ RSpec.describe Avaliacao, type: :model do
         another_user = create(:user)
         # Cria uma avaliação com o mesmo formulário, mas um usuário diferente
         avaliacao = build(:avaliacao, user: another_user, formulario: formulario)
-        
+
         # Espera-se que esta avaliação seja válida
         expect(avaliacao).to be_valid
       end

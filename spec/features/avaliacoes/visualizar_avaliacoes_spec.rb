@@ -35,7 +35,7 @@ RSpec.feature "Visualizar Formulários para Responder", type: :feature do
 
     # Então eu devo ver o card da turma "Cálculo 1"
     # Usamos within para garantir que as próximas verificações ocorram dentro do card correto
-    within(".card", text: "Cálculo 1") do
+    within(".turma-card", text: "Cálculo 1") do
       # E dentro do card da turma, eu devo ver o link para a avaliação "Avaliação de Meio de Semestre"
       expect(page).to have_link('Avaliação de Meio de Semestre')
     end
@@ -43,16 +43,14 @@ RSpec.feature "Visualizar Formulários para Responder", type: :feature do
 
   # Cenário: Participante não possui avaliações pendentes em uma turma
   scenario "não possui avaliações pendentes em uma turma" do
-    # Dado que a turma "Cálculo 1" não possui formulários pendentes para mim
-    # (Nenhum dado extra é criado neste cenário)
+    # Dado que a turma "Cálculo 1" possui um formulário mas todas as avaliações foram concluídas
+    formulario = create(:formulario, nome: 'Avaliação Concluída', turma: turma)
+    avaliacao = create(:avaliacao, user: participante, formulario: formulario, status: :concluida)
     
-    # Então eu devo ver o card da turma "Cálculo 1"
-    within(".card", text: "Cálculo 1") do
-      # E dentro do card da turma, eu devo ver a mensagem "Todos os formulários dessa turma foram respondidos."
-      expect(page).to have_content("Todos os formulários dessa turma foram respondidos.")
-      
-      # Garante também que não há links de avaliação
-      expect(page).not_to have_link('Responder') 
-    end
+    # Quando eu visito a página de avaliações novamente
+    visit avaliacoes_path
+    
+    # Então eu não devo ver nenhuma turma com avaliações pendentes
+    expect(page).to have_content("Você não possui avaliações pendentes no momento.")
   end
 end

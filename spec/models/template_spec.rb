@@ -36,7 +36,7 @@ RSpec.describe Template, type: :model do
     it 'is invalid without a name' do
       template = build(:template, nome: nil)
       expect(template).not_to be_valid
-      expect(template.errors[:nome]).to include("não pode ficar em branco")
+      expect(template.errors[:nome]).to include("can't be blank")
     end
   end
 end

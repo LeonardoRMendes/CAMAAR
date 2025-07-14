@@ -25,11 +25,11 @@ RSpec.describe Matricula, type: :model do
       it 'is invalid with a duplicate user and turma' do
         # Tenta criar uma segunda matrícula com o mesmo usuário e turma
         duplicate_matricula = build(:matricula, user: user, turma: turma)
-        
+
         # Espera-se que a matrícula duplicada não seja válida
         expect(duplicate_matricula).not_to be_valid
         # Verifica se a mensagem de erro correta está presente
-        expect(duplicate_matricula.errors[:user_id]).to include('já está em uso')
+        expect(duplicate_matricula.errors[:user_id]).to include('has already been taken')
       end
 
       it 'is valid for the same user in a different turma' do
@@ -37,7 +37,7 @@ RSpec.describe Matricula, type: :model do
         another_turma = create(:turma)
         # Cria uma matrícula para o mesmo usuário, mas em uma turma diferente
         matricula = build(:matricula, user: user, turma: another_turma)
-        
+
         # Espera-se que esta matrícula seja válida
         expect(matricula).to be_valid
       end
@@ -47,7 +47,7 @@ RSpec.describe Matricula, type: :model do
         another_user = create(:user)
         # Cria uma matrícula para um usuário diferente na mesma turma
         matricula = build(:matricula, user: another_user, turma: turma)
-        
+
         # Espera-se que esta matrícula seja válida
         expect(matricula).to be_valid
       end

@@ -7,6 +7,10 @@ FactoryBot.define do
     sequence(:matricula) { |n| "20240000#{n}" }
     role { :participante }
     
+    trait :admin do
+      role { :admin }
+    end
+    
     trait :without_password do
       password { nil }
       password_confirmation { nil }

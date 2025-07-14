@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.feature "Importação de Dados via Arquivo JSON", type: :feature do
 
   # --- Contexto (Setup) ---
-  let!(:admin) { create(:user, role: :admin) }
+  let!(:admin) { create(:user, role: :admin, email: 'admin@camaar.com', password: 'password123', password_confirmation: 'password123') }
 
   # Cria um diretório temporário para os arquivos de teste
   before(:all) do
@@ -21,28 +21,46 @@ RSpec.feature "Importação de Dados via Arquivo JSON", type: :feature do
   before do
     visit login_path
     fill_in 'E-mail', with: admin.email
-    fill_in 'Senha', with: 'password123'
+    fill_in 'Senha', with: admin.password
     click_button 'Entrar'
     
     # E eu estou na página de "Importação de Dados"
     # Nota: a rota 'admin_importacao_path' é uma suposição. Altere se necessário.
-    visit admin_importacao_path
+    visit admin_importacoes_path
   end
 
   # Cenário: Importação de um arquivo JSON bem-sucedida
   scenario "Importação de um arquivo JSON bem-sucedida" do
-    # Cria um arquivo JSON válido para o teste
-    json_content = '[{"turma": {"codigo": "COMP123", "nome": "Engenharia de Software"}, "discentes": [{"nome": "Joao Silva", "email": "joao.silva@email.com"}]}]'
+    # Cria um arquivo JSON válido para o teste com o formato esperado pelo serviço
+    json_content = '{
+      "turmas": [
+        {
+          "id_turma": "123",
+          "codigo_componente": "COMP123",
+          "nome_componente": "Engenharia de Software",
+          "ano": 2024,
+          "periodo": 1,
+          "discentes": ["12345"]
+        }
+      ],
+      "discentes": [
+        {
+          "matricula": "12345",
+          "nome": "Joao Silva",
+          "email": "joao.silva@email.com"
+        }
+      ]
+    }'
     File.write(File.join(@fixtures_path, 'class_members.json'), json_content)
     
     # Quando eu anexo o arquivo "class_members.json"
-    attach_file 'Arquivo JSON', File.join(@fixtures_path, 'class_members.json')
+    attach_file 'arquivo', File.join(@fixtures_path, 'class_members.json')
     
     # E eu clico no botão "Importar Arquivo"
     click_button 'Importar Arquivo'
     
     # Então eu devo ver uma mensagem de sucesso detalhando os dados importados
-    expect(page).to have_content('Arquivo importado com sucesso!') # Ajuste a mensagem conforme sua implementação
+    expect(page).to have_content('Arquivo importado com sucesso!')
     
     # E o usuário correspondente ao primeiro discente deve existir no banco de dados
     expect(User.find_by(email: 'joao.silva@email.com')).to be_present
@@ -57,7 +75,7 @@ RSpec.feature "Importação de Dados via Arquivo JSON", type: :feature do
     File.write(File.join(@fixtures_path, 'invalido.json'), "{'formato': 'invalido'}")
     
     # Quando eu anexo o arquivo "invalido.json"
-    attach_file 'Arquivo JSON', File.join(@fixtures_path, 'invalido.json')
+    attach_file 'arquivo', File.join(@fixtures_path, 'invalido.json')
     
     # E eu clico no botão "Importar Arquivo"
     click_button 'Importar Arquivo'
@@ -69,15 +87,33 @@ RSpec.feature "Importação de Dados via Arquivo JSON", type: :feature do
   # Cenário: Importação não duplica usuários ou turmas existentes
   scenario "Importação não duplica usuários ou turmas existentes" do
     # Dado que a primeira turma e o primeiro discente já existem no banco
-    turma_existente = create(:turma, codigo: 'COMP123', nome: 'Engenharia de Software')
-    create(:user, email: 'joao.silva@email.com', nome: 'Joao Silva')
+    turma_existente = create(:turma, codigo: 'COMP123', nome: 'COMP123 - Engenharia de Software', sigaa_id: '123')
+    create(:user, email: 'joao.silva@email.com', nome: 'Joao Silva', role: :participante, matricula: '12345')
 
     # Cria o mesmo arquivo JSON do primeiro teste
-    json_content = '[{"turma": {"codigo": "COMP123", "nome": "Engenharia de Software"}, "discentes": [{"nome": "Joao Silva", "email": "joao.silva@email.com"}]}]'
+    json_content = '{
+      "turmas": [
+        {
+          "id_turma": "123",
+          "codigo_componente": "COMP123",
+          "nome_componente": "Engenharia de Software",
+          "ano": 2024,
+          "periodo": 1,
+          "discentes": ["12345"]
+        }
+      ],
+      "discentes": [
+        {
+          "matricula": "12345",
+          "nome": "Joao Silva",
+          "email": "joao.silva@email.com"
+        }
+      ]
+    }'
     File.write(File.join(@fixtures_path, 'class_members.json'), json_content)
     
     # Quando eu anexo o arquivo "class_members.json"
-    attach_file 'Arquivo JSON', File.join(@fixtures_path, 'class_members.json')
+    attach_file 'arquivo', File.join(@fixtures_path, 'class_members.json')
     
     # E eu clico no botão "Importar Arquivo"
     click_button 'Importar Arquivo'

@@ -12,7 +12,7 @@ RSpec.describe Formulario, type: :model do
     # Testes para as associações 'has_many'
     it { should have_many(:questoes).through(:template) }
     it { should have_many(:users).through(:avaliacoes) }
-    
+
     # Testa a associação 'has_many :avaliacoes' com suas opções específicas
     it 'has many avaliacoes' do
       association = described_class.reflect_on_association(:avaliacoes)
@@ -33,7 +33,7 @@ RSpec.describe Formulario, type: :model do
       turma = create(:turma)
       template = create(:template)
       formulario = build(:formulario, nome: 'Formulário de Teste Válido', turma: turma, template: template)
-      
+
       # Espera-se que o formulário seja válido
       expect(formulario).to be_valid
     end
@@ -42,11 +42,11 @@ RSpec.describe Formulario, type: :model do
     it 'is invalid without a name' do
       # Constrói um formulário sem nome
       formulario = build(:formulario, nome: nil)
-      
+
       # Espera-se que o formulário não seja válido
       expect(formulario).not_to be_valid
       # Verifica se a mensagem de erro correta está presente
-      expect(formulario.errors[:nome]).to include("não pode ficar em branco")
+      expect(formulario.errors[:nome]).to include("can't be blank")
     end
   end
 end

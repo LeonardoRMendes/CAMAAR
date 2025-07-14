@@ -5,11 +5,11 @@ RSpec.feature "Criar Formulário de Avaliação", type: :feature do
 
   # --- Contexto (Setup) ---
   # Cria os dados necessários antes de cada cenário
-  let!(:admin) { create(:user, role: :admin, email: 'admin@camaar.com', password: 'password123') }
-  let!(:participante) { create(:user, role: :participante, email: 'aluno@camaar.com', password: 'password123') }
+  let!(:admin) { create(:user, role: :admin, email: 'admin@camaar.com', password: 'password123', password_confirmation: 'password123') }
+  let!(:participante) { create(:user, role: :participante, email: 'aluno@camaar.com', password: 'password123', password_confirmation: 'password123') }
   let!(:template) { create(:template, nome: 'Feedback Padrão Semestral') }
-  let!(:turma_calculo) { create(:turma, nome: 'Cálculo 1') }
-  let!(:turma_fisica) { create(:turma, nome: 'Física 1') }
+  let!(:turma_calculo) { create(:turma, :calculo) }
+  let!(:turma_fisica) { create(:turma, :fisica) }
 
   # Matricula o participante na turma de Cálculo para o teste de sucesso
   before do
@@ -29,7 +29,7 @@ RSpec.feature "Criar Formulário de Avaliação", type: :feature do
     visit admin_formularios_path 
 
     # E eu clico em "Criar Novo Formulário"
-    click_button 'Criar Novo Formulário'
+    click_link 'Criar Novo Formulário'
   end
 
   # Cenário: Administrador cria e envia um formulário para uma turma com sucesso
@@ -63,9 +63,8 @@ RSpec.feature "Criar Formulário de Avaliação", type: :feature do
     # E eu clico no botão "Gerar Formulário"
     click_button 'Gerar Formulário'
     
-    # Então eu devo permanecer na página de criação de formulário
-    # Nota: 'new_admin_formulario_path' é uma suposição. Altere se necessário.
-    expect(page).to have_current_path(new_admin_formulario_path) 
+    # Então eu devo permanecer na página de formulários
+    expect(page).to have_current_path(admin_formularios_path) 
     
     # E eu devo ver a mensagem de erro "É necessário selecionar um template."
     expect(page).to have_content("É necessário selecionar um template.")
@@ -79,8 +78,8 @@ RSpec.feature "Criar Formulário de Avaliação", type: :feature do
     # E eu clico no botão "Gerar Formulário"
     click_button 'Gerar Formulário'
     
-    # Então eu devo permanecer na página de criação de formulário
-    expect(page).to have_current_path(new_admin_formulario_path)
+    # Então eu devo permanecer na página de formulários  
+    expect(page).to have_current_path(admin_formularios_path)
     
     # E eu devo ver a mensagem de erro "É necessário selecionar pelo menos uma turma."
     expect(page).to have_content("É necessário selecionar pelo menos uma turma.")

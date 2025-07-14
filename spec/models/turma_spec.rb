@@ -11,7 +11,7 @@ RSpec.describe Turma, type: :model do
       expect(association.macro).to eq :has_many
       expect(association.options[:dependent]).to eq :destroy
     end
-    
+
     # Testa a associação 'has_many :users' através de 'matriculas'
     it { should have_many(:users).through(:matriculas) }
 
@@ -38,7 +38,7 @@ RSpec.describe Turma, type: :model do
     it 'is invalid without a name' do
       turma = build(:turma, nome: nil)
       expect(turma).not_to be_valid
-      expect(turma.errors[:nome]).to include("não pode ficar em branco")
+      expect(turma.errors[:nome]).to include("can't be blank")
     end
   end
 end

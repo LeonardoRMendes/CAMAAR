@@ -9,14 +9,19 @@ RSpec.describe Questao, type: :model do
 
   # Bloco de testes para o enum de tipo
   describe 'enums' do
-    it { should define_enum_for(:tipo).with_values(texto: 'texto', multipla_escolha: 'multipla_escolha') }
+    it 'define enum tipo com valores string' do
+      expect(described_class.tipos).to eq(
+        'texto' => 'texto',
+        'multipla_escolha' => 'multipla_escolha'
+      )
+    end
   end
 
   # Bloco de testes para as validações
   describe 'validations' do
     it { should validate_presence_of(:texto) }
     it { should validate_presence_of(:tipo) }
-    
+
     # Testa a validação de inclusão para o campo 'obrigatoria'
     it { should validate_inclusion_of(:obrigatoria).in_array([true, false]) }
 
@@ -31,16 +36,16 @@ RSpec.describe Questao, type: :model do
       it { should_not validate_presence_of(:opcoes) }
     end
   end
-  
+
   # Bloco de testes para a serialização do atributo 'opcoes'
   describe 'serialization' do
     it 'serializes a Ruby array into the opcoes attribute' do
       opcoes_array = ["Opção 1", "Opção 2"]
       questao = create(:questao, tipo: :multipla_escolha, opcoes: opcoes_array)
-      
+
       # Recarrega a questão do banco de dados para garantir que a serialização funcionou
       questao.reload
-      
+
       # Verifica se o atributo 'opcoes' é um Array após ser lido do banco
       expect(questao.opcoes).to be_an(Array)
       expect(questao.opcoes).to eq(opcoes_array)
@@ -67,18 +72,18 @@ RSpec.describe Questao, type: :model do
         # Cria duas avaliações concluídas para o mesmo formulário
         avaliacao1 = create(:avaliacao, formulario: formulario, status: :concluida)
         avaliacao2 = create(:avaliacao, formulario: formulario, status: :concluida)
-        
+
         create(:resposta, avaliacao: avaliacao1, questao: questao, conteudo: 'Bom')
         create(:resposta, avaliacao: avaliacao2, questao: questao, conteudo: 'Ruim')
 
         results = questao.aggregate_results_for_formulario(formulario)
         expect(results).to eq({ "Bom" => 1, "Ruim" => 1 })
       end
-      
+
       it 'correctly aggregates multiple identical responses' do
         avaliacao1 = create(:avaliacao, formulario: formulario, status: :concluida)
         avaliacao2 = create(:avaliacao, formulario: formulario, status: :concluida)
-        
+
         create(:resposta, avaliacao: avaliacao1, questao: questao, conteudo: 'Bom')
         create(:resposta, avaliacao: avaliacao2, questao: questao, conteudo: 'Bom')
 
@@ -89,7 +94,7 @@ RSpec.describe Questao, type: :model do
       it 'does not include responses from pending avaliacoes' do
         avaliacao = create(:avaliacao, formulario: formulario, status: :pendente)
         create(:resposta, avaliacao: avaliacao, questao: questao, conteudo: 'Muito bom')
-        
+
         results = questao.aggregate_results_for_formulario(formulario)
         expect(results).to be_empty
       end

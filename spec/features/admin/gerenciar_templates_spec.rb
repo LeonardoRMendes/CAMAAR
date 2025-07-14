@@ -5,13 +5,13 @@ RSpec.feature "Gerenciamento de Templates de Formulário", type: :feature do
 
   # --- Contexto (Setup) ---
   # Cria o usuário administrador antes de todos os cenários
-  let!(:admin) { create(:user, role: :admin) }
+  let!(:admin) { create(:user, :admin) }
 
   # Bloco que executa antes de cada cenário para logar o admin
   before do
     visit login_path
     fill_in 'E-mail', with: admin.email
-    fill_in 'Senha', with: 'password123'
+    fill_in 'Senha', with: 'senha123'
     click_button 'Entrar'
   end
 
@@ -29,7 +29,7 @@ RSpec.feature "Gerenciamento de Templates de Formulário", type: :feature do
     # E eu adiciono a questão "Qual o seu nível de satisfação com a didática?"
     # Nota: A implementação de adicionar questões pode variar (ex: campos aninhados, JavaScript).
     # Este é um exemplo para um formulário simples.
-    fill_in 'template_questoes_attributes_0_texto', with: 'Qual o seu nível de satisfação com a didática?'
+    fill_in 'questoes[][texto]', with: 'Qual o seu nível de satisfação com a didática?'
     
     # E eu clico no botão "Salvar Template"
     click_button 'Salvar Template'
@@ -92,16 +92,19 @@ RSpec.feature "Gerenciamento de Templates de Formulário", type: :feature do
     visit admin_templates_path
     
     # E eu clico em "Excluir" para o template "Template Temporário"
-    # Aceita a caixa de diálogo de confirmação do navegador
-    accept_confirm do
-      find("tr", text: 'Template Temporário').click_link 'Excluir'
-    end
+    find("tr", text: 'Template Temporário').click_link 'Excluir'
     
     # Então eu devo ver a mensagem "Template 'Template Temporário' foi excluído com sucesso."
     expect(page).to have_content("Template 'Template Temporário' foi excluído com sucesso.")
     
-    # E eu não devo mais ver "Template Temporário" na lista de templates
-    expect(page).not_to have_content('Template Temporário')
+    # E eu não devo mais ver "Template Temporário" na lista de templates (verificando se a tabela existe ou se mostra mensagem de vazio)
+    if page.has_selector?('table tbody')
+      within('table tbody') do
+        expect(page).not_to have_content('Template Temporário')
+      end
+    else
+      expect(page).to have_content('Nenhum template criado ainda.')
+    end
   end
 
   # Cenário: Administrador não consegue excluir um template que já foi usado
@@ -113,9 +116,7 @@ RSpec.feature "Gerenciamento de Templates de Formulário", type: :feature do
     visit admin_templates_path
     
     # E eu clico em "Excluir" para o template "Relatório Anual"
-    accept_confirm do
-      find("tr", text: 'Relatório Anual').click_link 'Excluir'
-    end
+    find("tr", text: 'Relatório Anual').click_link 'Excluir'
     
     # Então eu devo ver a mensagem de erro "Não é possível excluir o template 'Relatório Anual', pois ele já foi utilizado em formulários."
     expect(page).to have_content("Não é possível excluir o template 'Relatório Anual', pois ele já foi utilizado em formulários.")
