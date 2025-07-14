@@ -1,18 +1,14 @@
 # features/step_definitions/definir_senha_steps.rb
 
 Dado('que um usuário foi criado com o e-mail {string} e ele recebeu um e-mail para definição de senha') do |email|
-  # Criamos o usuário e um token para ele
   @user = FactoryBot.create(:user, :without_password, email: email)
   @token = @user.signed_id(purpose: "password_setup", expires_in: 15.minutes)
 
-  # Simulamos o envio do e-mail (a lógica real estaria no controller ou service)
   UserMailer.with(user: @user, token: @token).password_setup_email.deliver_now
 end
 
 Quando('eu abro o link de definição de senha recebido no e-mail') do
-  # O Rails armazena os e-mails enviados em um array para testes
   sent_email = ActionMailer::Base.deliveries.last
-  # Extraímos o link do corpo do e-mail
   link_url = sent_email.body.to_s.match(/href="([^"]+)"/)[1]
   visit link_url
 end

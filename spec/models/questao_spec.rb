@@ -1,13 +1,10 @@
 require 'rails_helper'
 
-# Descreve os testes para o modelo Questao
 RSpec.describe Questao, type: :model do
-  # Bloco de testes para as associações
   describe 'associations' do
     it { should belong_to(:template) }
   end
 
-  # Bloco de testes para o enum de tipo
   describe 'enums' do
     it 'define enum tipo com valores string' do
       expect(described_class.tipos).to eq(
@@ -17,15 +14,12 @@ RSpec.describe Questao, type: :model do
     end
   end
 
-  # Bloco de testes para as validações
   describe 'validations' do
     it { should validate_presence_of(:texto) }
     it { should validate_presence_of(:tipo) }
 
-    # Testa a validação de inclusão para o campo 'obrigatoria'
     it { should validate_inclusion_of(:obrigatoria).in_array([true, false]) }
 
-    # Testa a validação condicional para o campo 'opcoes'
     context 'when tipo is multipla_escolha' do
       subject { build(:questao, tipo: :multipla_escolha) }
       it { should validate_presence_of(:opcoes) }
@@ -37,28 +31,23 @@ RSpec.describe Questao, type: :model do
     end
   end
 
-  # Bloco de testes para a serialização do atributo 'opcoes'
   describe 'serialization' do
     it 'serializes a Ruby array into the opcoes attribute' do
       opcoes_array = ["Opção 1", "Opção 2"]
       questao = create(:questao, tipo: :multipla_escolha, opcoes: opcoes_array)
 
-      # Recarrega a questão do banco de dados para garantir que a serialização funcionou
       questao.reload
 
-      # Verifica se o atributo 'opcoes' é um Array após ser lido do banco
       expect(questao.opcoes).to be_an(Array)
       expect(questao.opcoes).to eq(opcoes_array)
     end
   end
 
-  # Bloco de testes para os métodos de instância
   describe 'instance methods' do
     let(:template) { create(:template) }
     let(:formulario) { create(:formulario, template: template) }
     let!(:questao) { create(:questao, template: template, tipo: :multipla_escolha) }
 
-    # Testa o método 'aggregate_results_for_formulario'
     describe '#aggregate_results_for_formulario' do
       it 'correctly aggregates a single response' do
         avaliacao = create(:avaliacao, formulario: formulario, status: :concluida)
@@ -69,7 +58,6 @@ RSpec.describe Questao, type: :model do
       end
 
       it 'correctly aggregates multiple different responses' do
-        # Cria duas avaliações concluídas para o mesmo formulário
         avaliacao1 = create(:avaliacao, formulario: formulario, status: :concluida)
         avaliacao2 = create(:avaliacao, formulario: formulario, status: :concluida)
 
@@ -100,7 +88,6 @@ RSpec.describe Questao, type: :model do
       end
     end
 
-    # Testa o método 'opcoes_lista'
     describe '#opcoes_lista' do
       it 'returns an empty array when tipo is texto' do
         questao_texto = build(:questao, tipo: :texto)

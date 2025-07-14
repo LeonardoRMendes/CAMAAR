@@ -25,8 +25,6 @@ Então('o conteúdo do arquivo CSV deve conter a linha {string}') do |content_ro
 end
 
 Dado('que ocorre um erro no servidor ao tentar gerar o CSV para o formulário {string}') do |nome_formulario|
-  # Simulamos uma falha. Para isso, vamos assumir que a lógica de geração de CSV
-  # está em um Service Object 'CsvExportService'. Vamos forçar uma exceção.
   allow_any_instance_of(CsvExportService).to receive(:generate).and_raise(StandardError)
 end
 

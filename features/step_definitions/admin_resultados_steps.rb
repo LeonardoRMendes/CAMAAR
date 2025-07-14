@@ -1,19 +1,16 @@
 # features/step_definitions/admin_resultados_steps.rb
 
 Dado('que um formulário sobre {string} foi respondido por um participante com a resposta {string} para a questão {string}') do |nome_formulario, texto_resposta, texto_questao|
-  # 1. Cria os dados base
+
   participante = FactoryBot.create(:user, role: :participante)
   turma = FactoryBot.create(:turma)
   template = FactoryBot.create(:template)
   questao = FactoryBot.create(:questao, texto: texto_questao, template: template)
 
-  # 2. Cria o formulário para a turma
   formulario = FactoryBot.create(:formulario, nome: nome_formulario, template: template, turma: turma)
 
-  # 3. Cria a "tarefa" de avaliação para o participante
   avaliacao = FactoryBot.create(:avaliacao, user: participante, formulario: formulario, status: :concluida)
 
-  # 4. Cria a resposta efetiva do participante
   FactoryBot.create(:resposta, conteudo: texto_resposta, questao: questao, user: participante, avaliacao: avaliacao)
 end
 
@@ -41,8 +38,6 @@ Quando('eu vou para a página de {string}') do |nome_pagina|
 end
 
 Quando('eu clico para ver os resultados do formulário {string}') do |nome_formulario|
-  # Supondo uma lista de formulários na página de resultados
-  # e cada um tem um link para seus resultados.
   formulario = Formulario.find_by(nome: nome_formulario)
   click_link "Ver Resultados", href: admin_resultado_path(formulario.id)
 end
@@ -52,7 +47,6 @@ Então('eu devo ver o título da questão {string}') do |texto_questao|
 end
 
 Então('eu devo ver a resposta {string} com a contagem de {string}') do |texto_resposta, contagem|
-  # Supondo uma estrutura de lista para as respostas e suas contagens
   within('.questao-results') do
     expect(page).to have_content("#{texto_resposta}: #{contagem}")
   end
