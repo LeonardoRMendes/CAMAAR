@@ -1,0 +1,92 @@
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+    <h1>Sistema de Avaliação Universitária</h1>
+    <div>
+      Bem-vindo, <strong><%= current_user&.nome || current_user&.email %></strong>
+      <%= link_to "Sair", logout_path, method: :delete, class: "btn btn-secondary", style: "margin-left: 15px;" %>
+    </div>
+  </div>
+
+  <% if current_user&.role == 'admin' %>
+    <div class="alert alert-info">
+      <strong>Área do Administrador</strong><br>
+      Você tem permissões de administrador para gerenciar o sistema.
+    </div>
+
+    <div class="admin-dashboard">
+      <h2>Painel Administrativo</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+        
+        <div class="dashboard-card">
+          <h3>Templates de Avaliação</h3>
+          <p>Gerencie templates de avaliação, crie questões e defina estruturas de formulários.</p>
+          <div style="margin-top: 15px;">
+            <%= link_to "Ver Templates", admin_templates_path, class: "btn btn-primary" %>
+            <%= link_to "Criar Template", new_admin_template_path, class: "btn btn-success" %>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Formulários</h3>
+          <p>Crie e gerencie formulários de avaliação para turmas específicas.</p>
+          <div style="margin-top: 15px;">
+            <%= link_to "Ver Formulários", admin_formularios_path, class: "btn btn-primary" %>
+            <%= link_to "Criar Formulário", new_admin_formulario_path, class: "btn btn-success" %>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Resultados</h3>
+          <p>Visualize e exporte resultados das avaliações realizadas.</p>
+          <div style="margin-top: 15px;">
+            <%= link_to "Ver Resultados", admin_resultados_path, class: "btn btn-primary" %>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Importar Dados</h3>
+          <p>Importe dados de turmas, alunos e outras informações em lote.</p>
+          <div style="margin-top: 15px;">
+            <%= link_to "Importar Dados", admin_importacoes_path, class: "btn btn-primary" %>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+        <h3>Estatísticas Rápidas</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+          <div class="stat-card">
+            <strong><%= ::Template.count %></strong><br>
+            <small>Templates Criados</small>
+          </div>
+          <div class="stat-card">
+            <strong><%= ::Formulario.count %></strong><br>
+            <small>Formulários Ativos</small>
+          </div>
+          <div class="stat-card">
+            <strong><%= ::User.count %></strong><br>
+            <small>Usuários no Sistema</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <% else %>
+    
+    <div class="participant-dashboard">
+      <h2>Suas Avaliações</h2>
+      <p>Bem-vindo ao sistema de avaliação! Aqui você pode participar das avaliações disponíveis.</p>
+      
+      <div class="dashboard-card">
+        <h3>Avaliações Disponíveis</h3>
+        <p>Visualize e participe das avaliações que estão abertas para você.</p>
+        <div style="margin-top: 15px;">
+          <%= link_to "Ver Avaliações", avaliacoes_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+
+  <% end %>
+</div>

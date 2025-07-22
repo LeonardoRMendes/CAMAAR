@@ -1,0 +1,100 @@
+<h1><%= @formulario.nome %></h1>
+
+<%= form_tag formulario_respostas_path(@formulario), method: :post do %>
+  <% @questoes.each do |questao| %>
+    <div class="question-group">
+      <%= label_tag "respostas[#{questao.id}]", questao.texto %>
+      <% if questao.obrigatoria %>
+        <span class="required">*</span>
+      <% end %>
+      
+      <%= text_area_tag "respostas[#{questao.id}]", "", 
+                        id: "questao_#{questao.id}", 
+                        class: "form-control",
+                        rows: 3,
+                        required: questao.obrigatoria %>
+    </div>
+  <% end %>
+  
+  <!-- Debug: texto antes do botão -->
+  <p>Aqui deveria aparecer o botão:</p>
+  
+  <div class="form-group">
+    <%= submit_tag "Enviar Avaliação", class: "btn btn-primary" %>
+  </div>
+  
+  <!-- Debug: texto depois do botão -->
+  <p>Botão renderizado com sucesso!</p>
+<% end %>
+
+<style>
+  .question-group {
+    margin-bottom: 20px;
+  }
+  
+  .question-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .required {
+    color: red;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .opcoes-multipla-escolha {
+    margin-top: 8px;
+  }
+  
+  .opcao-label {
+    display: block !important;
+    font-weight: normal !important;
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s;
+  }
+  
+  .opcao-label:hover {
+    background-color: #e8f4fd;
+  }
+  
+  .opcao-radio {
+    margin-right: 10px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .alert {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+</style>

@@ -1,0 +1,71 @@
+<%# app/views/admin/importacoes/index.html.erb %>
+<h1>Importar Dados do JSON</h1>
+
+<% if flash[:notice] %>
+  <div class="alert alert-success">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<div class="admin-navigation">
+  <%= link_to "Templates", admin_templates_path, class: "btn btn-secondary" %>
+  <%= link_to "Formulários", admin_formularios_path, class: "btn btn-secondary" %>
+  <%= link_to "Importar Dados", admin_importacoes_path, class: "btn btn-secondary" %>
+  <%= link_to "Resultados", admin_resultados_path, class: "btn btn-secondary" %>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Selecionar Arquivo JSON</h5>
+    <p class="card-text">
+      Selecione um arquivo JSON contendo os dados de turmas e discentes para importar.
+      O arquivo deve conter as chaves "turmas" e "discentes" com os respectivos dados.
+    </p>
+    
+    <%= form_with url: admin_importacoes_path, local: true, multipart: true do |form| %>
+      <div class="mb-3">
+        <%= form.label :arquivo, "Arquivo JSON:", class: "form-label" %>
+        <%= form.file_field :arquivo, accept: ".json", class: "form-control", required: true %>
+      </div>
+      
+      <div class="mb-3">
+        <%= form.submit "Importar Arquivo", class: "btn btn-primary" %>
+        <%= link_to "Templates", admin_templates_path, class: "btn btn-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="mt-4">
+  <h5>Formato Esperado do JSON:</h5>
+  <pre><code>{
+  "turmas": [
+    {
+      "id_turma": "123",
+      "codigo_componente": "CIC0105",
+      "nome_componente": "Programação de Computadores",
+      "ano": 2024,
+      "periodo": 1,
+      "discentes": ["12345", "67890"]
+    }
+  ],
+  "discentes": [
+    {
+      "matricula": "12345",
+      "nome": "João Silva",
+      "email": "joao@email.com"
+    },
+    {
+      "matricula": "67890", 
+      "nome": "Maria Santos",
+      "email": "maria@email.com"
+    }
+  ]
+}</code></pre>
+</div>

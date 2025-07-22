@@ -1,0 +1,163 @@
+<div class="container">
+  <h1>Criar Novo Template</h1>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <style>
+    .questao-group {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .opcoes-container {
+      background-color: #f0f8ff;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #b0c4de;
+    }
+    
+    .tipo-resposta {
+      max-width: 200px;
+    }
+  </style>
+
+  <%= form_with model: [:admin, @template], local: true do |form| %>
+    <div class="form-group">
+      <%= form.label :nome, "Nome do Template" %>
+      <%= form.text_field :nome, required: true %>
+    </div>
+    
+    <div class="form-group">
+      <%= form.label :descricao, "Descrição (opcional)" %>
+      <%= form.text_area :descricao, rows: 3 %>
+    </div>
+    
+    <h3>Questões</h3>
+    <div id="questoes-container">
+      <div class="questao-group">
+        <div class="form-group">
+          <label>Texto da Questão 1</label>
+          <input type="text" name="questoes[][texto]" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Tipo de Resposta</label>
+          <select name="questoes[][tipo]" class="tipo-resposta" required>
+            <option value="texto">Texto Livre</option>
+            <option value="multipla_escolha">Múltipla Escolha</option>
+          </select>
+        </div>
+        
+        <div class="opcoes-container" style="display: none;">
+          <label>Opções de Resposta (uma por linha)</label>
+          <textarea name="questoes[][opcoes_texto]" rows="5" placeholder="Muito Bom&#10;Bom&#10;Normal&#10;Ruim&#10;Muito Ruim"></textarea>
+        </div>
+        
+        <label>
+          <input type="checkbox" name="questoes[][obrigatoria]" value="1">
+          Questão obrigatória
+        </label>
+      </div>
+    </div>
+    
+    <button type="button" id="add-questao" class="btn btn-secondary">Adicionar Questão</button>
+    
+    <div class="form-actions" style="margin-top: 30px;">
+      <%= form.submit "Salvar Template", class: "btn btn-primary" %>
+      <%= link_to "Cancelar", admin_templates_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    let questaoCount = 1;
+    
+    // Função para mostrar/ocultar opções baseado no tipo
+    function toggleOpcoes(select) {
+      const opcoesContainer = select.closest('.questao-group').querySelector('.opcoes-container');
+      if (select.value === 'multipla_escolha') {
+        opcoesContainer.style.display = 'block';
+        opcoesContainer.querySelector('textarea').required = true;
+      } else {
+        opcoesContainer.style.display = 'none';
+        opcoesContainer.querySelector('textarea').required = false;
+      }
+    }
+    
+    // Aplicar toggle para a primeira questão
+    const firstSelect = document.querySelector('.tipo-resposta');
+    firstSelect.addEventListener('change', function() {
+      toggleOpcoes(this);
+    });
+    
+    document.getElementById('add-questao').addEventListener('click', function() {
+      questaoCount++;
+      
+      const questaoGroup = document.createElement('div');
+      questaoGroup.className = 'questao-group';
+      questaoGroup.innerHTML = `
+        <div class="form-group">
+          <label>Texto da Questão ${questaoCount}</label>
+          <input type="text" name="questoes[][texto]" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Tipo de Resposta</label>
+          <select name="questoes[][tipo]" class="tipo-resposta" required>
+            <option value="texto">Texto Livre</option>
+            <option value="multipla_escolha">Múltipla Escolha</option>
+          </select>
+        </div>
+        
+        <div class="opcoes-container" style="display: none;">
+          <label>Opções de Resposta (uma por linha)</label>
+          <textarea name="questoes[][opcoes_texto]" rows="5" placeholder="Muito Bom&#10;Bom&#10;Normal&#10;Ruim&#10;Muito Ruim"></textarea>
+        </div>
+        
+        <label>
+          <input type="checkbox" name="questoes[][obrigatoria]" value="1">
+          Questão obrigatória
+        </label>
+        <button type="button" class="btn btn-danger remove-questao" style="margin-top: 10px;">Remover</button>
+      `;
+      
+      document.getElementById('questoes-container').appendChild(questaoGroup);
+      
+      // Add toggle functionality for new question
+      const newSelect = questaoGroup.querySelector('.tipo-resposta');
+      newSelect.addEventListener('change', function() {
+        toggleOpcoes(this);
+      });
+      
+      // Add remove functionality
+      questaoGroup.querySelector('.remove-questao').addEventListener('click', function() {
+        questaoGroup.remove();
+      });
+    });
+  });
+</script>

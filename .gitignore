@@ -28,7 +28,20 @@
 !/tmp/storage/
 !/tmp/storage/.keep
 
+# Ignore development database
+/storage/development.sqlite3
+/storage/test.sqlite3
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore test scripts
+create_*.rb
+test_*.rb
+
 /public/assets
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/vendor
