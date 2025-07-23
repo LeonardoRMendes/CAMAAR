@@ -27,6 +27,7 @@ group :development, :test do
 end
 
 group :test do
+  gem 'simplecov', require: false
   gem "cucumber-rails", require: false
   gem "capybara"
   gem "database_cleaner-active_record"
