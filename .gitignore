@@ -41,7 +41,3 @@ create_*.rb
 test_*.rb
 
 /public/assets
-
-# Ignore master key for decrypting credentials and more.
-/config/master.key
-/vendor
