@@ -10,6 +10,8 @@ module TrabalhoFinal
   class Application < Rails::Application
     config.load_defaults 8.0
 
+    config.require_master_key = false
+
     config.autoload_lib(ignore: %w[assets tasks])
 
     # Rails 8 configurations
