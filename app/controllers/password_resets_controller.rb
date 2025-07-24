@@ -1,4 +1,9 @@
+# Controlador para redefinição de senha via link assinado.
 class PasswordResetsController < ApplicationController
+  # Exibe o formulário de redefinição de senha.
+  #
+  # @return [void]
+  # @note Redireciona para login se o token for inválido ou expirado.
   def edit
     @user = User.find_signed(params[:token], purpose: "password_setup")
     if @user.nil?
@@ -6,6 +11,11 @@ class PasswordResetsController < ApplicationController
     end
   end
 
+  # Atualiza a senha do usuário.
+  #
+  # @return [void]
+  # @note Redireciona para login se sucesso, ou renderiza :edit com erro.
+  # @param [ActionController::Parameters] params contendo :password e :password_confirmation
   def update
     @user = User.find_signed(params[:token], purpose: "password_setup")
     
@@ -23,7 +33,10 @@ class PasswordResetsController < ApplicationController
   end
 
   private
-  
+
+  # Filtra os parâmetros permitidos para redefinição de senha.
+  #
+  # @return [ActionController::Parameters] parâmetros permitidos
   def password_params
     params.require(:user).permit(:password, :password_confirmation)
   end
