@@ -12,11 +12,11 @@
 | templates_controller | 18.4               |               10.8             |
 | Content Cell  | Content Cell               |                            |
 
--Abaixo tem a comparação da mudança dos metodos ds controllers que foram apontados como tendo complexidade alta pelo RubyCritic, como o RubyCritic só mostra o flog do metodo se ele tiver complexidade alta, não temos certeza no flog dos metodos refatorados, temos certeza que pelo menos tem o flog menor que 26 que foi o maior flog que ainda dava alerta de complexidade alta
+-  Abaixo tem a comparação da mudança dos metodos ds controllers que foram apontados como tendo complexidade alta pelo RubyCritic, como o RubyCritic só mostra o flog do metodo se ele tiver complexidade alta, não temos certeza no flog dos metodos refatorados, temos certeza que pelo menos tem o flog menor que 26 que foi o maior flog que ainda dava alerta de complexidade alta
 
--templates_controller: Nesse controller foram mudados os metodos "create" e "update"
--  create: Esse metodo tava com um flog de 58, e na sua refatoração funçoes que existiam dentro do create foram transformados nos metodos helpers "templateValido?" e "criarQuestao".
--  update: Esse metodo tava com um flog de 80, na refatoração 4 funções que estavm dentro de "update" se transformarem nos metodos helpers "updateQuestoesExis" , "updateQuestoesNovas" , "removerQuestoes" e "nomeValidoupdate".
+-  templates_controller: Nesse controller foram mudados os metodos "create" e "update"
+-    create: Esse metodo tava com um flog de 58, e na sua refatoração funçoes que existiam dentro do create foram transformados nos metodos helpers "templateValido?" e "criarQuestao".
+-    update: Esse metodo tava com um flog de 80, na refatoração 4 funções que estavm dentro de "update" se transformarem nos metodos helpers "updateQuestoesExis" , "updateQuestoesNovas" , "removerQuestoes" e "nomeValidoupdate".
 
 ## Testes com RSpec:
 ### **Responsável**: Leonardo Mendes
