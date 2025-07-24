@@ -5,6 +5,10 @@ module Import
       @stats = { turmas: 0, discentes: 0, matriculas: 0 }
     end
 
+    # Executa o processo de importação do arquivo JSON.
+    #
+    # @return [Hash] um hash com sucesso e estatísticas ou erro
+    # @note Captura erros de parsing ou falhas gerais na leitura e processamento.
     def call
       data = JSON.parse(@file.read)
       
@@ -21,6 +25,10 @@ module Import
 
     private
 
+    # Processa as turmas do JSON, criando novas se necessário.
+    #
+    # @param turmas_data [Array<Hash>] lista de turmas a importar
+    # @return [void]
     def process_turmas(turmas_data)
       turmas_data.each do |turma_info|
         turma = Turma.find_or_initialize_by(sigaa_id: turma_info['id_turma'])
@@ -35,6 +43,10 @@ module Import
       end
     end
 
+    # Processa os discentes do JSON, cadastrando novos usuários se necessário.
+    #
+    # @param discentes_data [Array<Hash>] lista de discentes a importar
+    # @return [void]
     def process_discentes(discentes_data)
       discentes_data.each do |discente_info|
         user = User.find_or_initialize_by(email: discente_info['email'])
@@ -44,14 +56,19 @@ module Import
           user.matricula = discente_info['matricula'] if discente_info['matricula']
           user.password = SecureRandom.hex(8) # Senha temporária
           user.save!
-          
+
           send_password_setup_email(user)
-          
+
           @stats[:discentes] += 1
         end
       end
     end
 
+    # Cria matrículas entre usuários e turmas com base no JSON.
+    #
+    # @param turmas_data [Array<Hash>] dados das turmas
+    # @param discentes_data [Array<Hash>] dados dos discentes
+    # @return [void]
     def process_matriculas(turmas_data, discentes_data)
       turmas_data.each do |turma_info|
         turma = Turma.find_by(sigaa_id: turma_info['id_turma'])
@@ -74,6 +91,10 @@ module Import
       end
     end
 
+    # Envia e-mail com link para definição de senha ao usuário recém-criado.
+    #
+    # @param user [User] o usuário a ser notificado
+    # @return [void]
     def send_password_setup_email(user)
       token = user.signed_id(purpose: "password_setup", expires_in: 15.minutes)
       UserMailer.with(user: user, token: token).password_setup_email.deliver_now

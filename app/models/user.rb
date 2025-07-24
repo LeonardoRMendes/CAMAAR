@@ -15,7 +15,10 @@ class User < ApplicationRecord
   
   # Campo para reset de senha
   attr_accessor :password_reset_token
-  
+
+  # Verifica se o usuário já tem uma senha definida.
+  #
+  # @return [Boolean] true se a senha já estiver definida (ou seja, se houver digest), false caso contrário
   def password_set?
     password_digest.present?
   end
