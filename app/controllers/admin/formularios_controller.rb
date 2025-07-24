@@ -10,17 +10,14 @@ class Admin::FormulariosController < ApplicationController
     @templates = Template.all
     @turmas = Turma.all
   end
-  
-  def create
-    template_id = params[:template_id]
-    turma_ids = params[:turma_ids] || []
-    
+
+  def formularioValido(template_id,turma_ids)
     if template_id.blank?
       flash.now[:alert] = "É necessário selecionar um template."
       @templates = Template.all
       @turmas = Turma.all
       render :new
-      return
+      return true
     end
     
     if turma_ids.empty?
@@ -28,12 +25,12 @@ class Admin::FormulariosController < ApplicationController
       @templates = Template.all
       @turmas = Turma.all
       render :new
-      return
+      return true
     end
-    
-    template = Template.find(template_id)
+  end
+
+  def criarFormularioTurmas(turma_ids,template)
     formularios_criados = 0
-    
     turma_ids.each do |turma_id|
       turma = Turma.find(turma_id)
       
@@ -55,9 +52,24 @@ class Admin::FormulariosController < ApplicationController
       
       formularios_criados += 1
     end
+    return formularios_criados
+  end
+  
+  def create
+    template_id = params[:template_id]
+    turma_ids = params[:turma_ids] || []
+    
+    if formularioValido(template_id,turma_ids)
+      return
+    end
+    
+    template = Template.find(template_id)
+    
+    formularios =criarFormularioTurmas(turma_ids,template)
+    
     
     redirect_to admin_formularios_path, 
-                notice: "Formulário '#{template.nome}' foi gerado e enviado para #{formularios_criados} turma(s)."
+                notice: "Formulário '#{template.nome}' foi gerado e enviado para #{formularios} turma(s)."
   end
   
   def destroy

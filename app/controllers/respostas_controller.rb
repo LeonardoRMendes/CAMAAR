@@ -1,49 +1,51 @@
 class RespostasController < ApplicationController
   before_action :require_login
   
-  def create
-    @formulario = Formulario.find(params[:formulario_id])
-    @questoes = @formulario.template.questoes.order(:id)
-    
-    required_questions = @questoes.where(obrigatoria: true)
+  def questoesObrig(questoesobg)
     missing_required = []
-    
-    required_questions.each do |questao|
+    questoesobg.each do |questao|
       response_content = params[:respostas]&.[](questao.id.to_s)
       if response_content.blank?
         missing_required << questao.texto
       end
     end
+    return missing_required
+  end
+  
+ def questoesObrigfal
+    required_questions = @questoes.where(obrigatoria: true)
+    missing_required = questoesObrig(required_questions)
     
     if missing_required.any?
       flash.now[:alert] = "Todos os campos obrigatórios devem ser preenchidos"
       render 'formularios/show'
-      return
+      return true
+    else
+      return false
     end
+ end
 
-    avaliacao = Avaliacao.find_by(user: current_user, formulario: @formulario)
-    
+  def criaAvaliacao(avaliacao)
     if avaliacao.nil?
       # Criar avaliação automaticamente se o usuário estiver matriculado na turma
-      if current_user.turmas.include?(@formulario.turma)
-        avaliacao = Avaliacao.create!(
-          user: current_user,
-          formulario: @formulario,
-          status: :pendente
-        )
-      else
-        flash.now[:alert] = "Você não está matriculado nesta turma."
-        render 'formularios/show'
-        return
-      end
+        if current_user.turmas.include?(@formulario.turma)
+          avaliacao = Avaliacao.create!(
+            user: current_user,
+            formulario: @formulario,
+            status: :pendente
+          )
+          return avaliacao
+        else
+          flash.now[:alert] = "Você não está matriculado nesta turma."
+          render 'formularios/show'
+          return false
+        end
+    else
+      return avaliacao
     end
-    
-    # Verificar se a avaliação já foi concluída
-    if avaliacao.concluida?
-      redirect_to minhas_avaliacoes_path, notice: "Esta avaliação já foi concluída."
-      return
-    end
+  end
 
+  def conteudoQuestoes(avaliacao)
     @questoes.each do |questao|
       response_content = params[:respostas]&.[](questao.id.to_s)
       if response_content.present?
@@ -70,6 +72,31 @@ class RespostasController < ApplicationController
         end
       end
     end
+  end
+
+  def create
+    @formulario = Formulario.find(params[:formulario_id])
+    @questoes = @formulario.template.questoes.order(:id)
+    
+    if questoesObrigfal
+      return
+    end
+   
+    avaliacao = Avaliacao.find_by(user: current_user, formulario: @formulario)
+    
+    avaliacao=criaAvaliacao(avaliacao)
+    if !avaliacao
+      return
+    end
+    
+    
+    # Verificar se a avaliação já foi concluída
+    if avaliacao.concluida?
+      redirect_to minhas_avaliacoes_path, notice: "Esta avaliação já foi concluída."
+      return
+    end
+
+    conteudoQuestoes(avaliacao)
 
     avaliacao.update!(status: :concluida)
     
