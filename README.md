@@ -1,3 +1,6 @@
+(As informações da Sprint 2 estão descritas na <a href="https://github.com/LeonardoRMendes/CAMAAR/wiki">Wiki</a> do github)
+
+```https://github.com/LeonardoRMendes/CAMAAR/wiki```
 # Descrição Sprint 3:
 
 ## Refatoração com RubyCritic:
