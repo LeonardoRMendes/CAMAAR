@@ -8,15 +8,27 @@
 - Abaixo primeiramente temos a tabela mais geral que contém todos os controllers que foram alterados, e a mudança de complexity per method
   
 | Controller           | Complexity per method Velho| Complexity per method Novo |
-| -------------------- | -------------------------- | -------------------------- |
+| :---: | :---: | :---: |
 | templates_controller | 18.4               |               10.8             |
-| Content Cell  | Content Cell               |                            |
+| formularios_controller  | 11.1               |                 8.7           |
+| respostas_controller  | 35.0               |                 12.7            |
+| sessions_controller  | 18.0               |                 10.5            |
+| importacoes_controller  | 15.3              |                 7.1            |
 
--  Abaixo tem a comparação da mudança dos metodos ds controllers que foram apontados como tendo complexidade alta pelo RubyCritic, como o RubyCritic só mostra o flog do metodo se ele tiver complexidade alta, não temos certeza no flog dos metodos refatorados, temos certeza que pelo menos tem o flog menor que 26 que foi o maior flog que ainda dava alerta de complexidade alta
+-  Abaixo tem a comparação da mudança dos metodos ds controllers que foram apontados como tendo complexidade alta pelo RubyCritic, como o RubyCritic só mostra o flog do metodo se ele tiver complexidade alta, não temos certeza no flog dos metodos refatorados, temos certeza que pelo menos o flog é menor que 26, já que esse foi o maior flog que ainda dava alerta de complexidade alta
 
--  templates_controller: Nesse controller foram mudados os metodos "create" e "update"
-  -  create: Esse metodo tava com um flog de 58, e na sua refatoração funçoes que existiam dentro do create foram transformados nos metodos helpers "templateValido?" e "criarQuestao".
-  -  update: Esse metodo tava com um flog de 80, na refatoração 4 funções que estavm dentro de "update" se transformarem nos metodos helpers "updateQuestoesExis" , "updateQuestoesNovas" , "removerQuestoes" e "nomeValidoupdate".
+-  **templates_controller**: Nesse controller foram mudados os métodos "create" e "update"
+    -  **create**: Esse metodo tava com um flog score de 58, e na sua refatoração funçoes que existiam dentro do create foram transformados nos metodos auxiliares "templateValido?" e "criarQuestao".
+    -  **update**: Esse metodo tava com um flog score de 80, na refatoração 4 funções que estavam dentro de "update" se transformarem nos metodos auxiliares "updateQuestoesExis" , "updateQuestoesNovas" , "removerQuestoes" e "nomeValidoupdate".
+-  **formularios_controller**: Nesse controller foi mudado o método "create"
+    - **create**: Esse método tava com um flog score de 39, em sua refatoraçao foram criados os metodos auxiliares "formularioValido" , "criarFormularioTurmas" que auxiliam "create"
+-  **respostas_controller**: Nesse controller foi mudado o método "create"
+    -  **create**: Esse método estava com um flog score de 67, em sua refatoração foram criados os métodos auxiliares "questoesObrig", "questoesObrigfal" , "criaAvaliacao" e "conteudoQuestoes" que auxiliam "create"
+-  **sessions_controller**: Nesse controller foi mudado o método "create"
+    -  **create**: Esse método estava com um flog score de 51, na sua refatoração foram criados os métodos auxiliares "logSection" e "testarSenha" que auxiliam o método "create"
+-  **importacoes_controller**: Nesse controller foi mudado o método "create"
+    -  **create**: Esse método estava com um flog score de 41, na sua refatoração foram criados os métodos auxiliares "importSucess" , "importFailure" e "importResult" que auxiliam o método "create"
+
 
 ## Testes com RSpec:
 ### **Responsável**: Leonardo Mendes
