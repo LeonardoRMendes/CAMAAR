@@ -5,8 +5,12 @@
 
 ## Refatoração com RubyCritic:
 ### **Responsável**: João Pedro
-- 
-- 
+- Abaixo primeiramente temos a tabela mais geral que contém todos os controllers que foram alterados, e a mudança de complexity per method
+  
+| Controller           | Complexity per method Velho| Complexity per method Novo |
+| -------------------- | -------------------------- | -------------------------- |
+| templates_controller | 18.4               |               10.8             |
+| Content Cell  | Content Cell               |                            |
 
 
 ## Testes com RSpec:
