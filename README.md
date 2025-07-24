@@ -55,6 +55,7 @@ Sistema web para avaliação de turmas acadêmicas desenvolvido em Ruby on Rails
 ```bash
 chmod +x setup.sh
 ./setup.sh
+rails server
 ```
 
 ## Credenciais de Teste
