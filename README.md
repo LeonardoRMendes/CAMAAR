@@ -8,7 +8,7 @@
 
 ## Testes com RSpec:
 ### **Responsável**: Leonardo Mendes
-- Os testes previamente implementados na sprint-2 do projeto foram refatorados para aumentar a cobertura, atingindo uma coverage total de quase 93%
+- Os testes previamente implementados na sprint-2 do projeto foram refatorados para aumentar a cobertura, atingindo uma coverage total de quase 93%.
 ### Para visualizar os resultados
 ```bash
 bundle exec rspec
