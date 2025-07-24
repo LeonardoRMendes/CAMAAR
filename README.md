@@ -1,3 +1,27 @@
+# Descrição Sprint 3:
+
+## Refatoração com RubyCritic:
+### **Responsável**: João Pedro
+- 
+- 
+
+
+## Testes com RSpec:
+### **Responsável**: Leonardo Mendes
+- Os testes previamente implementados na sprint-2 do projeto foram refatorados para aumentar a cobertura, atingindo uma coverage total de quase 93%
+### Para visualizar os resultados
+```bash
+bundle exec rspec
+xdg-open coverage/index.html
+```
+
+
+## Documentação com RDoc:
+### **Responsável**: João Lucas
+- 
+- 
+
+
 # CAMAAR - Sistema de Avaliação Acadêmica
 
 Sistema web para avaliação de turmas acadêmicas desenvolvido em Ruby on Rails.
