@@ -41,9 +41,8 @@ xdg-open coverage/index.html
 
 
 ## Documentação com RDoc:
-### **Responsável**: João Lucas
-- 
-- 
+### **Responsável**: João Lucas Sales Aragão
+Foram adicionados comentários de documentação RDoc aos métodos definidos manualmente nas controllers, models, services e mailers em /app. Para cada método, foi incluída uma breve descrição de sua funcionalidade, os parâmetros esperados (@param), o valor de retorno (@return) e possíveis efeitos colaterais (@note), conforme especificado pela na descrição da Sprint 3. Após a documentação, se gerou com sucesso a documentação HTML.
 
 
 # CAMAAR - Sistema de Avaliação Acadêmica
